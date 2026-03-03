@@ -35,3 +35,6 @@ uv.lock
 
 # Ruff
 .ruff_cache/
+
+# Playbook
+development-playbook.md
