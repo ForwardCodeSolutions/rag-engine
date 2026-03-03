@@ -1,0 +1,42 @@
+[project]
+name = "rag-engine"
+version = "0.1.0"
+description = "Lightweight hybrid RAG engine for multilingual document search"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn>=0.34",
+    "qdrant-client>=1.12",
+    "sentence-transformers>=3.3",
+    "rank-bm25>=0.2",
+    "networkx>=3.4",
+    "langdetect>=1.0",
+    "structlog>=24.4",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.7",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.8",
+    "httpx>=0.28",
+    "pytest-asyncio>=0.25",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 99
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
