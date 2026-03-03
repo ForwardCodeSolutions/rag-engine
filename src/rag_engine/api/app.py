@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from rag_engine.api.routes import health_router
+from rag_engine.api.routes import gdpr_router, health_router
 from rag_engine.models.config import Settings
 from rag_engine.utils.logging import setup_logging
 
@@ -20,6 +20,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health_router, prefix="/api/v1")
+    app.include_router(gdpr_router, prefix="/api/v1")
 
     return app
 
