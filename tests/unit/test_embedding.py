@@ -39,10 +39,12 @@ class TestEmbeddingService:
 
     def test_encode_returns_list_of_lists(self) -> None:
         service, mock_model = self._make_service_with_mock(vector_size=3)
-        mock_model.encode.return_value = np.array([
-            [0.1, 0.2, 0.3],
-            [0.4, 0.5, 0.6],
-        ])
+        mock_model.encode.return_value = np.array(
+            [
+                [0.1, 0.2, 0.3],
+                [0.4, 0.5, 0.6],
+            ]
+        )
 
         result = service.encode(["hello", "world"])
         assert len(result) == 2
