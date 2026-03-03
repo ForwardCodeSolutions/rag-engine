@@ -39,7 +39,12 @@ class FixedChunker(BaseChunker):
         Args:
             chunk_size: Maximum characters per chunk.
             overlap: Number of overlapping characters between chunks.
+
+        Raises:
+            ValueError: If overlap is not smaller than chunk_size.
         """
+        if overlap >= chunk_size:
+            raise ValueError(f"overlap ({overlap}) must be less than chunk_size ({chunk_size})")
         self.chunk_size = chunk_size
         self.overlap = overlap
 
