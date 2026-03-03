@@ -67,6 +67,10 @@ class TestFixedChunker:
         chunks = chunker.chunk("")
         assert chunks == []
 
+    def test_overlap_ge_chunk_size_raises(self) -> None:
+        with pytest.raises(ValueError, match="overlap"):
+            FixedChunker(chunk_size=100, overlap=100)
+
     def test_chunk_index_sequential(self) -> None:
         chunker = FixedChunker(chunk_size=50, overlap=10)
         chunks = chunker.chunk("A" * 200)
