@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 import networkx as nx
 import structlog
 
+from rag_engine.storage.base import BaseStore
+
 logger = structlog.get_logger()
 
 # Patterns for extracting entities from text (capitalized multi-word phrases)
@@ -93,7 +95,7 @@ def extract_entities(text: str) -> list[str]:
     return list(dict.fromkeys(entities))
 
 
-class KnowledgeGraphStore:
+class KnowledgeGraphStore(BaseStore):
     """In-memory knowledge graph with per-tenant isolation.
 
     Builds a NetworkX graph where:
