@@ -3,14 +3,17 @@
 import re
 from functools import lru_cache
 
+import structlog
 from fastapi import Header, HTTPException
 
 from rag_engine.models.config import Settings
 from rag_engine.services.gdpr import GDPRService
 from rag_engine.storage.bm25_store import BM25Store
 from rag_engine.storage.knowledge_graph import KnowledgeGraphStore
+from rag_engine.storage.qdrant_store import QdrantStore
 
 _settings = Settings()
+_logger = structlog.get_logger()
 
 VALID_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{1,128}$")
 
@@ -18,7 +21,14 @@ VALID_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{1,128}$")
 @lru_cache(maxsize=1)
 def get_gdpr_service() -> GDPRService:
     """Factory for GDPRService with all storage backends."""
-    return GDPRService(BM25Store(), KnowledgeGraphStore())
+    qdrant_store: QdrantStore | None = None
+    try:
+        qdrant_store = QdrantStore(url=_settings.qdrant_url)
+        qdrant_store._client.get_collections()  # verify connectivity
+    except Exception:
+        _logger.warning("qdrant_unavailable_for_gdpr", url=_settings.qdrant_url)
+        qdrant_store = None
+    return GDPRService(BM25Store(), KnowledgeGraphStore(), qdrant_store)
 
 
 async def verify_api_key(x_api_key: str = Header(...)) -> str:
