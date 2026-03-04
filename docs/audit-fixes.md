@@ -4,17 +4,17 @@ Post-audit checklist. Mark `[x]` when done, add commit hash.
 
 ## КРИТИЧНО (блокирует публикацию)
 
-- [ ] **AUTH-1** API Authentication — middleware X-API-Key, `Depends()`, `/health` без auth
-- [ ] **AUTH-2** Убрать hardcoded `"changeme"` — `api_key` обязательный, приложение не стартует без него
-- [ ] **GDPR-1** Каскадное удаление — подключить QdrantStore к GDPRService в routes
-- [ ] **GDPR-2** `documents_removed` — возвращать реальное количество, не 0
-- [ ] **DOCKER-1** Dockerfile — multi-stage, python:3.11-slim, uv, non-root user
-- [ ] **DOCKER-2** .dockerignore
-- [ ] **STORE-1** `hash()` → `hashlib.sha256` для Qdrant point IDs (детерминистичный)
-- [ ] **API-1** `POST /api/v1/documents/upload` endpoint
-- [ ] **API-2** `POST /api/v1/documents/search` endpoint
-- [ ] **TEST-1** Обновить тесты — auth header, новые endpoints, парсеры
-- [ ] **DOCS-1** Обновить README.md — upload, search, auth в примерах curl
+- [x] **AUTH-1** API Authentication — middleware X-API-Key, `Depends()`, `/health` без auth
+- [x] **AUTH-2** Убрать hardcoded `"changeme"` — `api_key` обязательный, приложение не стартует без него
+- [x] **GDPR-1** Каскадное удаление — подключить QdrantStore к GDPRService в routes
+- [x] **GDPR-2** `documents_removed` — возвращать реальное количество, не 0
+- [x] **DOCKER-1** Dockerfile — multi-stage, python:3.11-slim, uv, non-root user
+- [x] **DOCKER-2** .dockerignore
+- [x] **STORE-1** `hash()` → `hashlib.sha256` для Qdrant point IDs (детерминистичный)
+- [x] **API-1** `POST /api/v1/documents/upload` endpoint
+- [x] **API-2** `POST /api/v1/documents/search` endpoint
+- [x] **TEST-1** Обновить тесты — auth header, новые endpoints, парсеры
+- [x] **DOCS-1** Обновить README.md — upload, search, auth в примерах curl
 
 ## РЕКОМЕНДОВАНО (после критического)
 

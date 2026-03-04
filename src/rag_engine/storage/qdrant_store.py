@@ -1,5 +1,7 @@
 """Qdrant vector store with per-tenant collection isolation."""
 
+import hashlib
+
 import structlog
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
@@ -88,7 +90,8 @@ class QdrantStore:
 
         points = []
         for document_id, chunk_index, text, embedding in chunks:
-            point_id = abs(hash(f"{document_id}:{chunk_index}")) % (2**63)
+            key = f"{document_id}:{chunk_index}"
+            point_id = int(hashlib.sha256(key.encode()).hexdigest()[:16], 16)
             points.append(
                 PointStruct(
                     id=point_id,
@@ -201,18 +204,25 @@ class QdrantStore:
 
         return removed
 
-    def clear_tenant(self, tenant_id: str) -> None:
+    def clear_tenant(self, tenant_id: str) -> int:
         """Delete the entire collection for a tenant (GDPR right to erasure).
 
         Args:
             tenant_id: Tenant whose collection should be deleted.
+
+        Returns:
+            Number of points removed.
         """
         collection_name = self._collection_name(tenant_id)
 
         existing = [c.name for c in self._client.get_collections().collections]
-        if collection_name in existing:
-            self._client.delete_collection(collection_name=collection_name)
-            logger.info("qdrant_tenant_cleared", tenant_id=tenant_id)
+        if collection_name not in existing:
+            return 0
+
+        total = self._client.count(collection_name=collection_name).count
+        self._client.delete_collection(collection_name=collection_name)
+        logger.info("qdrant_tenant_cleared", tenant_id=tenant_id, points_removed=total)
+        return total
 
     def clear(self) -> None:
         """Remove all tenant collections."""

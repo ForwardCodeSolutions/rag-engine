@@ -46,4 +46,4 @@ class DocumentResponse(BaseModel):
     tenant_id: str = Field(description="Owning tenant")
     language: str = Field(description="Detected language")
     chunk_count: int = Field(description="Number of chunks created")
-    created_at: datetime = Field(description="Upload timestamp")
+    created_at: datetime = Field(default_factory=datetime.now, description="Upload timestamp")

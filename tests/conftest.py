@@ -1,5 +1,10 @@
 """Shared pytest fixtures for rag-engine tests."""
 
+import os
+
+# Set test API key before any app imports (Settings is evaluated at import time)
+os.environ.setdefault("API_KEY", "test-api-key")
+
 import pytest
 from fastapi.testclient import TestClient
 from qdrant_client import QdrantClient
@@ -9,6 +14,14 @@ from rag_engine.services.gdpr import GDPRService
 from rag_engine.storage.bm25_store import BM25Store
 from rag_engine.storage.knowledge_graph import KnowledgeGraphStore
 from rag_engine.storage.qdrant_store import QdrantStore
+
+TEST_API_KEY = "test-api-key"
+
+
+@pytest.fixture
+def api_headers() -> dict[str, str]:
+    """Headers with valid API key for authenticated requests."""
+    return {"X-API-Key": TEST_API_KEY}
 
 
 @pytest.fixture

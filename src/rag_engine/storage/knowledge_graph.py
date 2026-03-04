@@ -302,15 +302,20 @@ class KnowledgeGraphStore:
 
         return len(chunk_ids_to_remove)
 
-    def clear_tenant(self, tenant_id: str) -> None:
+    def clear_tenant(self, tenant_id: str) -> int:
         """Remove all data for a tenant (GDPR right to erasure).
 
         Args:
             tenant_id: Tenant whose data should be deleted.
+
+        Returns:
+            Number of chunks removed.
         """
+        chunks = self._chunks.pop(tenant_id, {})
         self._graphs.pop(tenant_id, None)
-        self._chunks.pop(tenant_id, None)
-        logger.info("knowledge_graph_tenant_cleared", tenant_id=tenant_id)
+        total = len(chunks)
+        logger.info("knowledge_graph_tenant_cleared", tenant_id=tenant_id, chunks_removed=total)
+        return total
 
     def clear(self) -> None:
         """Remove all data from all graphs."""

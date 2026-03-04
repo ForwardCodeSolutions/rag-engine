@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     # Embedding model
     embedding_model: str = "intfloat/multilingual-e5-large"
 
-    # API
-    api_key: str = "changeme"
+    # API (required — app will not start without API_KEY in .env)
+    api_key: str
 
     # Logging
     log_level: str = "info"
