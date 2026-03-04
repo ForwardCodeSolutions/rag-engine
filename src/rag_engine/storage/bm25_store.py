@@ -181,15 +181,22 @@ class BM25Store:
 
         return total_removed
 
-    def clear_tenant(self, tenant_id: str) -> None:
+    def clear_tenant(self, tenant_id: str) -> int:
         """Remove all data for a tenant (GDPR right to erasure).
 
         Args:
             tenant_id: Tenant whose data should be deleted.
+
+        Returns:
+            Number of chunks removed.
         """
-        if tenant_id in self._indexes:
-            del self._indexes[tenant_id]
-            logger.info("bm25_tenant_cleared", tenant_id=tenant_id)
+        if tenant_id not in self._indexes:
+            return 0
+
+        total = sum(len(idx.documents) for idx in self._indexes[tenant_id].values())
+        del self._indexes[tenant_id]
+        logger.info("bm25_tenant_cleared", tenant_id=tenant_id, chunks_removed=total)
+        return total
 
     def clear(self) -> None:
         """Remove all data from all indexes."""

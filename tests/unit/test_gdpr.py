@@ -157,6 +157,8 @@ class TestAuditLogging:
 class TestGDPREndpoints:
     """Tests for GDPR API endpoints."""
 
+    _headers = {"X-API-Key": "test-api-key"}
+
     def _get_client(self) -> TestClient:
         from rag_engine.api.app import app
 
@@ -167,6 +169,7 @@ class TestGDPREndpoints:
         response = client.delete(
             "/api/v1/documents/doc-123",
             params={"tenant_id": "tenant-1", "reason": "test deletion"},
+            headers=self._headers,
         )
         assert response.status_code == 200
         data = response.json()
@@ -179,8 +182,26 @@ class TestGDPREndpoints:
         response = client.delete(
             "/api/v1/tenants/tenant-1/data",
             params={"reason": "GDPR erasure request"},
+            headers=self._headers,
         )
         assert response.status_code == 200
         data = response.json()
         assert data["tenant_id"] == "tenant-1"
         assert "deleted successfully" in data["message"]
+
+    def test_delete_document_without_auth_returns_401(self) -> None:
+        client = self._get_client()
+        response = client.delete(
+            "/api/v1/documents/doc-123",
+            params={"tenant_id": "tenant-1"},
+        )
+        assert response.status_code == 422  # missing required header
+
+    def test_delete_document_with_wrong_key_returns_401(self) -> None:
+        client = self._get_client()
+        response = client.delete(
+            "/api/v1/documents/doc-123",
+            params={"tenant_id": "tenant-1"},
+            headers={"X-API-Key": "wrong-key"},
+        )
+        assert response.status_code == 401

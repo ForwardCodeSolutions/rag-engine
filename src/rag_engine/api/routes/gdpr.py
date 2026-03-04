@@ -1,7 +1,8 @@
 """GDPR compliance API endpoints."""
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 
+from rag_engine.api.dependencies import verify_api_key
 from rag_engine.models.gdpr import (
     DocumentDeleteResponse,
     GDPRDeleteResponse,
@@ -10,11 +11,12 @@ from rag_engine.services.gdpr import GDPRService
 from rag_engine.storage.bm25_store import BM25Store
 from rag_engine.storage.knowledge_graph import KnowledgeGraphStore
 
-router = APIRouter(tags=["gdpr"])
+router = APIRouter(tags=["gdpr"], dependencies=[Depends(verify_api_key)])
 
 # Shared store instances (will be replaced with dependency injection later)
 _bm25_store = BM25Store()
 _graph_store = KnowledgeGraphStore()
+
 _gdpr_service = GDPRService(_bm25_store, _graph_store)
 
 
@@ -26,7 +28,7 @@ async def delete_document(
 ) -> DocumentDeleteResponse:
     """Delete a document and all its indexed data (GDPR).
 
-    Cascades deletion across BM25 index and Knowledge Graph.
+    Cascades deletion across BM25 index, Knowledge Graph, and Qdrant.
     """
     result = _gdpr_service.delete_document(
         tenant_id=tenant_id,
@@ -56,13 +58,13 @@ async def delete_tenant_data(
     Permanently removes all documents, indexes, and graph data
     for the specified tenant.
     """
-    _gdpr_service.delete_tenant_data(
+    result = _gdpr_service.delete_tenant_data(
         tenant_id=tenant_id,
         reason=reason,
     )
 
     return GDPRDeleteResponse(
         tenant_id=tenant_id,
-        documents_removed=0,
+        documents_removed=result["total_removed"],
         message=f"All data for tenant {tenant_id} deleted successfully",
     )

@@ -81,19 +81,28 @@ make fix
 
 ### Test Suite
 
-173 tests across unit and integration:
+195 tests across unit and integration:
 
 ```
 tests/
-  unit/           — 163 tests (models, ingestion, BM25, knowledge graph,
-                     hybrid retriever, Qdrant, embedding, GDPR, evaluation)
+  unit/           — 185 tests (models, ingestion, BM25, knowledge graph,
+                     hybrid retriever, Qdrant, embedding, GDPR, auth,
+                     document endpoints, evaluation)
   integration/    — 10 tests (full retrieval pipeline, GDPR cascade,
                      API endpoints, quality metrics)
 ```
 
+## Authentication
+
+All endpoints (except `/health`) require an `X-API-Key` header. Set the `API_KEY` environment variable in `.env`:
+
+```bash
+API_KEY=your-secret-key-here
+```
+
 ## API Endpoints
 
-### Health
+### Health (no auth required)
 
 ```bash
 curl http://localhost:8000/api/v1/health
@@ -103,10 +112,50 @@ curl http://localhost:8000/api/v1/health
 {"status": "healthy", "qdrant_connected": false, "version": "0.1.0"}
 ```
 
+### Upload Document
+
+```bash
+curl -X POST http://localhost:8000/api/v1/documents/upload \
+  -H "X-API-Key: your-secret-key-here" \
+  -F "tenant_id=tenant-1" \
+  -F "document_type=general" \
+  -F "file=@document.pdf"
+```
+
+```json
+{
+  "id": "a1b2c3d4-...",
+  "filename": "document.pdf",
+  "tenant_id": "tenant-1",
+  "language": "en",
+  "chunk_count": 12
+}
+```
+
+### Search Documents
+
+```bash
+curl -X POST http://localhost:8000/api/v1/documents/search \
+  -H "X-API-Key: your-secret-key-here" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "machine learning", "tenant_id": "tenant-1", "top_k": 5}'
+```
+
+```json
+{
+  "query": "machine learning",
+  "results": [
+    {"document_id": "a1b2c3d4-...", "chunk_index": 3, "text": "...", "score": 0.85}
+  ],
+  "total_results": 1
+}
+```
+
 ### Delete Document (GDPR)
 
 ```bash
-curl -X DELETE "http://localhost:8000/api/v1/documents/doc-123?tenant_id=tenant-1&reason=user+request"
+curl -X DELETE "http://localhost:8000/api/v1/documents/doc-123?tenant_id=tenant-1&reason=user+request" \
+  -H "X-API-Key: your-secret-key-here"
 ```
 
 ```json
@@ -122,7 +171,8 @@ curl -X DELETE "http://localhost:8000/api/v1/documents/doc-123?tenant_id=tenant-
 ### Delete Tenant Data (GDPR Right to Erasure)
 
 ```bash
-curl -X DELETE "http://localhost:8000/api/v1/tenants/tenant-1/data?reason=GDPR+erasure+request"
+curl -X DELETE "http://localhost:8000/api/v1/tenants/tenant-1/data?reason=GDPR+erasure+request" \
+  -H "X-API-Key: your-secret-key-here"
 ```
 
 ```json
@@ -137,7 +187,7 @@ curl -X DELETE "http://localhost:8000/api/v1/tenants/tenant-1/data?reason=GDPR+e
 
 ```
 src/rag_engine/
-  api/              FastAPI routes (health, GDPR endpoints)
+  api/              FastAPI routes (upload, search, health, GDPR)
   core/             Hybrid retriever, re-ranker, evaluation metrics
   ingestion/        Document parsers (PDF, DOCX, TXT), chunkers, language detection
   models/           Pydantic models (document, search, config, health, GDPR)

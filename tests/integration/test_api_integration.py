@@ -211,10 +211,12 @@ class TestGDPRCascadeDeletion:
 class TestAPIEndpoints:
     """Integration tests for HTTP API endpoints."""
 
+    _headers = {"X-API-Key": "test-api-key"}
+
     def _get_client(self) -> TestClient:
         return TestClient(create_app())
 
-    def test_health_endpoint(self) -> None:
+    def test_health_endpoint_no_auth_required(self) -> None:
         client = self._get_client()
         response = client.get("/api/v1/health")
         assert response.status_code == 200
@@ -226,6 +228,7 @@ class TestAPIEndpoints:
         response = client.delete(
             "/api/v1/documents/doc-99",
             params={"tenant_id": "tenant-1", "reason": "integration test"},
+            headers=self._headers,
         )
         assert response.status_code == 200
         data = response.json()
@@ -239,13 +242,44 @@ class TestAPIEndpoints:
         response = client.delete(
             "/api/v1/tenants/tenant-1/data",
             params={"reason": "integration test"},
+            headers=self._headers,
         )
         assert response.status_code == 200
         data = response.json()
         assert data["tenant_id"] == "tenant-1"
         assert "message" in data
+        assert data["documents_removed"] >= 0
 
     def test_nonexistent_route_returns_404(self) -> None:
         client = self._get_client()
         response = client.get("/api/v1/nonexistent")
         assert response.status_code == 404
+
+    def test_upload_and_search_flow(self) -> None:
+        client = self._get_client()
+
+        # Upload a text file
+        response = client.post(
+            "/api/v1/documents/upload",
+            data={"tenant_id": "tenant-1", "document_type": "general"},
+            files={"file": ("test.txt", b"Python is a programming language", "text/plain")},
+            headers=self._headers,
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["chunk_count"] >= 1
+        assert data["language"] == "en"
+
+        # Search for the uploaded content
+        response = client.post(
+            "/api/v1/documents/search",
+            json={
+                "query": "programming language",
+                "tenant_id": "tenant-1",
+                "search_type": "bm25",
+            },
+            headers=self._headers,
+        )
+        assert response.status_code == 200
+        data = response.json()
+        assert data["total_results"] >= 1

@@ -94,7 +94,7 @@ class GDPRService:
         self,
         tenant_id: str,
         reason: str = "GDPR right to erasure",
-    ) -> None:
+    ) -> dict[str, int]:
         """Delete ALL data for a tenant across all storage backends.
 
         This implements GDPR Article 17 (Right to Erasure). All data
@@ -103,11 +103,17 @@ class GDPRService:
         Args:
             tenant_id: Tenant whose data should be deleted.
             reason: Reason for deletion (audit trail).
+
+        Returns:
+            Dictionary with counts of removed items per backend.
         """
-        self.bm25_store.clear_tenant(tenant_id)
-        self.graph_store.clear_tenant(tenant_id)
+        bm25_removed = self.bm25_store.clear_tenant(tenant_id)
+        graph_removed = self.graph_store.clear_tenant(tenant_id)
+        vector_removed = 0
         if self.qdrant_store is not None:
-            self.qdrant_store.clear_tenant(tenant_id)
+            vector_removed = self.qdrant_store.clear_tenant(tenant_id)
+
+        total = bm25_removed + graph_removed + vector_removed
 
         log_operation(
             operation="delete_all",
@@ -115,6 +121,23 @@ class GDPRService:
             resource_type="tenant",
             resource_id=tenant_id,
             reason=reason,
+            details={
+                "bm25_removed": bm25_removed,
+                "graph_removed": graph_removed,
+                "vector_removed": vector_removed,
+            },
         )
 
-        logger.info("tenant_data_deleted", tenant_id=tenant_id, reason=reason)
+        logger.info(
+            "tenant_data_deleted",
+            tenant_id=tenant_id,
+            reason=reason,
+            total_removed=total,
+        )
+
+        return {
+            "bm25_removed": bm25_removed,
+            "graph_removed": graph_removed,
+            "vector_removed": vector_removed,
+            "total_removed": total,
+        }
