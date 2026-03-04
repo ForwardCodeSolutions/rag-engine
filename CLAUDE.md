@@ -28,6 +28,8 @@ After ANY change, run `make check`. Do not commit if it fails.
 - `docs/decisions/` — ADRs (Qdrant choice, chunking strategy, etc.)
 - `docs/code-conventions.md` — Naming, style, patterns
 - `docs/testing-strategy.md` — What to test and how
+- `docs/audit-fixes.md` — Post-audit fix checklist (track progress here)
+- `docs/audit-technical-spec.md` — Technical spec for each fix
 
 ## Critical rules
 - Hybrid search: vector + BM25 + knowledge graph with weighted re-ranking
