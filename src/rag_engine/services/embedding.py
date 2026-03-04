@@ -1,5 +1,9 @@
 """Embedding service wrapping sentence-transformers for multilingual vectors."""
 
+from __future__ import annotations
+
+from typing import Any
+
 import numpy as np
 import structlog
 
@@ -24,7 +28,7 @@ class EmbeddingService:
         self._model = None
 
     @property
-    def model(self):
+    def model(self) -> Any:
         """Lazy-load the sentence-transformers model on first use."""
         if self._model is None:
             from sentence_transformers import SentenceTransformer

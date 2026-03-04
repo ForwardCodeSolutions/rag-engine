@@ -17,6 +17,9 @@ class Settings(BaseSettings):
     # API (required — app will not start without API_KEY in .env)
     api_key: str
 
+    # CORS
+    cors_origins: str = "http://localhost:3000"
+
     # Logging
     log_level: str = "info"
 

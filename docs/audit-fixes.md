@@ -18,13 +18,13 @@ Post-audit checklist. Mark `[x]` when done, add commit hash.
 
 ## РЕКОМЕНДОВАНО (после критического)
 
-- [ ] **SEC-1** CORS middleware с whitelist origins
-- [ ] **SEC-2** Rate limiting (slowapi) на деструктивные endpoints
-- [ ] **SEC-3** Валидация `tenant_id`/`document_id` — длина, формат, запрещённые символы
-- [ ] **TEST-2** Тесты парсеров PDF/DOCX с fixture-файлами (покрытие с 38%/50% до >80%)
-- [ ] **DOCKER-3** Healthcheck в docker-compose для qdrant
-- [ ] **DOCKER-4** Пиннинг версии qdrant в docker-compose
-- [ ] **DOCS-2** `docs/models.md` — привести в соответствие с реальным кодом
-- [ ] **CODE-1** Return type на `EmbeddingService.model` property
-- [ ] **CODE-2** `BaseStore` ABC для `storage/*`
-- [ ] **CODE-3** Dependency injection вместо module-level singletons в gdpr routes
+- [x] **SEC-1** CORS middleware с whitelist origins
+- [x] **SEC-2** Rate limiting (slowapi) на деструктивные endpoints
+- [x] **SEC-3** Валидация `tenant_id`/`document_id` — длина, формат, запрещённые символы
+- [x] **TEST-2** Тесты парсеров PDF/DOCX с fixture-файлами (покрытие с 38%/50% до >80%)
+- [x] **DOCKER-3** Healthcheck в docker-compose для qdrant
+- [x] **DOCKER-4** Пиннинг версии qdrant в docker-compose
+- [x] **DOCS-2** `docs/models.md` — привести в соответствие с реальным кодом
+- [x] **CODE-1** Return type на `EmbeddingService.model` property
+- [x] **CODE-2** `BaseStore` ABC для `storage/*`
+- [x] **CODE-3** Dependency injection вместо module-level singletons в gdpr routes

@@ -4,9 +4,10 @@ import tempfile
 import uuid
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, Form, HTTPException, Request, UploadFile
 
-from rag_engine.api.dependencies import verify_api_key
+from rag_engine.api.dependencies import validate_id, verify_api_key
+from rag_engine.api.routes.rate_limit import limiter
 from rag_engine.core.hybrid_retriever import HybridRetriever
 from rag_engine.ingestion.pipeline import ingest_document
 from rag_engine.models.document import DocumentResponse, DocumentType
@@ -36,6 +37,7 @@ async def upload_document(
     Supports PDF, DOCX, TXT, and MD files. Chunks are indexed
     into BM25 and Knowledge Graph for hybrid retrieval.
     """
+    validate_id(tenant_id, "tenant_id")
     filename = file.filename or "upload"
     suffix = Path(filename).suffix.lower()
 
@@ -92,7 +94,8 @@ async def upload_document(
 
 
 @router.post("/documents/search", response_model=SearchResponse)
-async def search_documents(query: SearchQuery) -> SearchResponse:
+@limiter.limit("60/minute")
+async def search_documents(request: Request, query: SearchQuery) -> SearchResponse:
     """Search across indexed documents using hybrid retrieval.
 
     Combines BM25 keyword search and Knowledge Graph traversal.

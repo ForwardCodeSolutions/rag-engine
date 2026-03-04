@@ -18,8 +18,8 @@ class SearchType(StrEnum):
 class SearchQuery(BaseModel):
     """Request model for document search."""
 
-    query: str = Field(description="Search text")
-    tenant_id: str = Field(description="Tenant identifier")
+    query: str = Field(max_length=2000, description="Search text")
+    tenant_id: str = Field(pattern=r"^[a-zA-Z0-9_-]{1,128}$", description="Tenant identifier")
     top_k: int = Field(default=10, ge=1, le=100, description="Number of results to return")
     search_type: SearchType = Field(
         default=SearchType.HYBRID, description="Retrieval method to use"

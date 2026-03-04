@@ -13,10 +13,12 @@ from qdrant_client.models import (
     VectorParams,
 )
 
+from rag_engine.storage.base import BaseStore
+
 logger = structlog.get_logger()
 
 
-class QdrantStore:
+class QdrantStore(BaseStore):
     """Vector store backed by Qdrant with per-tenant collections.
 
     Each tenant gets a separate Qdrant collection, ensuring full

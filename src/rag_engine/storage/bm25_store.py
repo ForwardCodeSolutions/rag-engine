@@ -5,6 +5,8 @@ from dataclasses import dataclass, field
 import structlog
 from rank_bm25 import BM25Plus
 
+from rag_engine.storage.base import BaseStore
+
 logger = structlog.get_logger()
 
 
@@ -46,7 +48,7 @@ class _LanguageIndex:
             self.bm25 = None
 
 
-class BM25Store:
+class BM25Store(BaseStore):
     """In-memory BM25 index with per-tenant and per-language isolation.
 
     Each tenant has independent indexes per language, ensuring that
