@@ -1,7 +1,7 @@
 name: CI
 on: [push, pull_request]
 jobs:
-  check:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -17,12 +17,47 @@ jobs:
           uv run ruff check src/
           uv run ruff format --check src/
 
+  security:
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - run: uv sync
+
+      - name: Bandit security scan
+        run: uv run bandit -r src/ -ll
+
+      - name: Dependency audit
+        run: uv run pip-audit
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: security
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - run: uv sync
+
       - name: Unit tests
         run: uv run pytest tests/ -v -m "not integration"
 
   integration:
     runs-on: ubuntu-latest
-    needs: check
+    needs: tests
     steps:
       - uses: actions/checkout@v4
 
