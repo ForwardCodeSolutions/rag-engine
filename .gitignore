@@ -38,3 +38,11 @@ uv.lock
 
 # Playbook
 development-playbook.md
+
+# Claude / AI tooling
+.claude/
+CLAUDE.md
+
+# Audit docs (internal)
+docs/audit-fixes.md
+docs/audit-technical-spec.md

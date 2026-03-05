@@ -48,7 +48,7 @@ graph TB
 ## Quick Start
 
 ```bash
-git clone https://github.com/hennadiipynko/rag-engine.git
+git clone https://github.com/ForwardCodeSolutions/rag-engine.git
 cd rag-engine
 
 # Install dependencies
@@ -81,14 +81,14 @@ make fix
 
 ### Test Suite
 
-195 tests across unit and integration:
+209 tests across unit and integration:
 
 ```
 tests/
-  unit/           — 185 tests (models, ingestion, BM25, knowledge graph,
+  unit/           — 198 tests (models, ingestion, BM25, knowledge graph,
                      hybrid retriever, Qdrant, embedding, GDPR, auth,
-                     document endpoints, evaluation)
-  integration/    — 10 tests (full retrieval pipeline, GDPR cascade,
+                     document endpoints, evaluation, parsers)
+  integration/    — 11 tests (full retrieval pipeline, GDPR cascade,
                      API endpoints, quality metrics)
 ```
 
@@ -109,7 +109,7 @@ curl http://localhost:8000/api/v1/health
 ```
 
 ```json
-{"status": "healthy", "qdrant_connected": false, "version": "0.1.0"}
+{"status": "healthy", "qdrant_connected": true, "version": "0.1.0"}
 ```
 
 ### Upload Document
