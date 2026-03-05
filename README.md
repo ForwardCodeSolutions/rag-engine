@@ -50,33 +50,19 @@ graph TB
 ```bash
 git clone https://github.com/ForwardCodeSolutions/rag-engine.git
 cd rag-engine
-
-# Install dependencies
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv sync
-
-# Configure environment
 cp .env.example .env
-
-# Start services (API + Qdrant)
+# Edit .env with your API keys
 docker compose up -d
-# API available at http://localhost:8000/docs
 ```
 
-## Development
+The API is available at `http://localhost:8000/docs`.
+
+### Local Development
 
 ```bash
-# Run all checks (lint + tests)
-make check
-
-# Run tests only
-make test
-
-# Run linter only
-make lint
-
-# Auto-fix lint issues
-make fix
+uv sync       # Install dependencies
+make check    # Lint + tests
+make dev      # Start with hot reload
 ```
 
 ### Test Suite
