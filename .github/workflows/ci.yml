@@ -53,7 +53,7 @@ jobs:
       - run: uv sync
 
       - name: Unit tests
-        run: uv run pytest tests/ -v -m "not integration"
+        run: uv run pytest tests/ -v -m "not integration" --cov=src --cov-report=xml
 
   integration:
     runs-on: ubuntu-latest
