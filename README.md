@@ -1,5 +1,8 @@
 # rag-engine
 
+![CI](https://github.com/ForwardCodeSolutions/rag-engine/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)
+
 Lightweight hybrid RAG engine combining vector search, BM25, and knowledge graphs. Built for multilingual document retrieval with GDPR compliance.
 
 ## Architecture
