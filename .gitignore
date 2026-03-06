@@ -33,15 +33,15 @@ htmlcov/
 # Ruff
 .ruff_cache/
 
-# Playbook
-development-playbook.md
-
-# Claude / AI tooling
+# Local tooling
 .claude/
 CLAUDE.md
+development-playbook.md
+AUDIT-PLAN.md
 
-# Audit docs (internal)
+# Internal docs
 docs/audit-fixes.md
 docs/audit-technical-spec.md
+
+# Hypothesis
 .hypothesis/
-AUDIT-PLAN.md
