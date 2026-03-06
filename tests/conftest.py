@@ -5,6 +5,13 @@ import os
 # Set test API key before any app imports (Settings is evaluated at import time)
 os.environ.setdefault("API_KEY", "test-api-key")
 
+from hypothesis import HealthCheck, settings
+
+settings.register_profile(
+    "ci", max_examples=200, deadline=5000, suppress_health_check=[HealthCheck.too_slow]
+)
+settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
+
 import pytest
 from fastapi.testclient import TestClient
 from qdrant_client import QdrantClient

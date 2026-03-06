@@ -29,6 +29,10 @@ dev = [
     "httpx>=0.28",
     "pytest-asyncio>=0.25",
     "pytest-cov>=7.0.0",
+    "pytest-xdist>=3.5",
+    "pytest-randomly>=3.16",
+    "hypothesis>=6.100",
+    "schemathesis>=3.38",
     "bandit>=1.7.0",
     "pip-audit>=2.7.0",
 ]
@@ -50,3 +54,12 @@ asyncio_mode = "auto"
 markers = [
     "integration: tests requiring full service stack (deselect with '-m not integration')",
 ]
+
+[tool.coverage.run]
+source = ["src/rag_engine"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "pass"]
