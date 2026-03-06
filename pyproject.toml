@@ -37,7 +37,6 @@ dev = [
     "pip-audit>=2.7.0",
     "mypy>=1.19.1",
     "vulture>=2.15",
-    "interrogate>=1.7.0",
 ]
 
 [build-system]
