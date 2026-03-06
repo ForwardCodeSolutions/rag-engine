@@ -12,15 +12,16 @@ settings.register_profile(
 )
 settings.load_profile(os.getenv("HYPOTHESIS_PROFILE", "default"))
 
-import pytest
-from fastapi.testclient import TestClient
-from qdrant_client import QdrantClient
+import pytest  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+from qdrant_client import QdrantClient  # noqa: E402
 
-from rag_engine.api.app import create_app
-from rag_engine.services.gdpr import GDPRService
-from rag_engine.storage.bm25_store import BM25Store
-from rag_engine.storage.knowledge_graph import KnowledgeGraphStore
-from rag_engine.storage.qdrant_store import QdrantStore
+from rag_engine.api.app import create_app  # noqa: E402
+from rag_engine.api.routes.rate_limit import limiter  # noqa: E402
+from rag_engine.services.gdpr import GDPRService  # noqa: E402
+from rag_engine.storage.bm25_store import BM25Store  # noqa: E402
+from rag_engine.storage.knowledge_graph import KnowledgeGraphStore  # noqa: E402
+from rag_engine.storage.qdrant_store import QdrantStore  # noqa: E402
 
 TEST_API_KEY = "test-api-key"
 
@@ -65,8 +66,15 @@ def gdpr_service(
     return GDPRService(bm25_store, graph_store, qdrant_store)
 
 
+@pytest.fixture(autouse=True)
+def _fresh_rate_limiter():
+    """Reset the rate limiter before each test to avoid cross-test 429 errors."""
+    limiter.reset()
+    yield
+
+
 @pytest.fixture
 def test_client() -> TestClient:
-    """FastAPI test client."""
+    """FastAPI test client with a fresh rate limiter."""
     app = create_app()
     return TestClient(app)

@@ -12,7 +12,7 @@ from rag_engine.storage.bm25_store import BM25Store
 from rag_engine.storage.knowledge_graph import KnowledgeGraphStore
 from rag_engine.storage.qdrant_store import QdrantStore
 
-_settings = Settings()
+_settings = Settings()  # type: ignore[call-arg]
 _logger = structlog.get_logger()
 
 VALID_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]{1,128}$")

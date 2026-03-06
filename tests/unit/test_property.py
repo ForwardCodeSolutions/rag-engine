@@ -10,7 +10,6 @@ from rag_engine.ingestion.chunker import FixedChunker, SemanticChunker
 from rag_engine.models.search import SearchQuery
 from rag_engine.storage.bm25_store import BM25Store
 
-
 # --- Chunker properties ---
 
 
@@ -138,7 +137,9 @@ def test_tenant_id_validation(id_str: str) -> None:
     assert sq.tenant_id == id_str
 
 
-@given(id_str=st.text(min_size=1, max_size=20).filter(lambda s: not re.match(r"^[a-zA-Z0-9_-]+$", s)))
+@given(
+    id_str=st.text(min_size=1, max_size=20).filter(lambda s: not re.match(r"^[a-zA-Z0-9_-]+$", s))
+)
 @settings(max_examples=50)
 def test_tenant_id_rejects_invalid(id_str: str) -> None:
     """Strings with invalid characters should be rejected."""

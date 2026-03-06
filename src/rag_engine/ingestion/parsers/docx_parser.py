@@ -21,7 +21,7 @@ class DocxParser(BaseParser):
             Concatenated text from all paragraphs.
         """
         try:
-            document = Document(file_path)
+            document = Document(str(file_path))
         except Exception as exc:
             raise IngestionError(f"Failed to open DOCX: {file_path}") from exc
 

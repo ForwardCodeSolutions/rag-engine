@@ -10,7 +10,7 @@ from rag_engine.api.routes.rate_limit import limiter
 from rag_engine.models.config import Settings
 from rag_engine.utils.logging import setup_logging
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
 
 
 def create_app() -> FastAPI:
@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
 
     # Rate limiting
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
 
     app.add_middleware(
         CORSMiddleware,

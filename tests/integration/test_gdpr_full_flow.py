@@ -40,7 +40,9 @@ class TestGDPRFullFlow:
 
         # 2. Search — should find the document
         results = retriever.search(
-            "gdpr-tenant", "Sensitive personal data", language="en",
+            "gdpr-tenant",
+            "Sensitive personal data",
+            language="en",
             search_type=SearchType.BM25,
         )
         assert len(results) >= 1
@@ -52,7 +54,9 @@ class TestGDPRFullFlow:
 
         # 4. Verify — search must return nothing
         results = retriever.search(
-            "gdpr-tenant", "Sensitive personal data", language="en",
+            "gdpr-tenant",
+            "Sensitive personal data",
+            language="en",
             search_type=SearchType.BM25,
         )
         assert len(results) == 0
@@ -79,7 +83,9 @@ class TestGDPRFullFlow:
 
         # Verify docs are searchable
         results = retriever.search(
-            "erasure-tenant", "Document number", language="en",
+            "erasure-tenant",
+            "Document number",
+            language="en",
             search_type=SearchType.BM25,
         )
         assert len(results) >= 1
@@ -90,7 +96,9 @@ class TestGDPRFullFlow:
 
         # Verify nothing remains
         results = retriever.search(
-            "erasure-tenant", "Document number", language="en",
+            "erasure-tenant",
+            "Document number",
+            language="en",
             search_type=SearchType.BM25,
         )
         assert len(results) == 0

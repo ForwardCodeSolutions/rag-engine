@@ -34,13 +34,19 @@ class TestConcurrentTenants:
         # Each tenant finds their own keyword
         for tenant, (_, query) in tenants.items():
             results = retriever.search(
-                tenant, query, language="en", search_type=SearchType.BM25,
+                tenant,
+                query,
+                language="en",
+                search_type=SearchType.BM25,
             )
             assert len(results) >= 1, f"{tenant} should find '{query}'"
 
         # tenant-beta must not see tenant-alpha data
         results = retriever.search(
-            "tenant-beta", "rockets", language="en", search_type=SearchType.BM25,
+            "tenant-beta",
+            "rockets",
+            language="en",
+            search_type=SearchType.BM25,
         )
         assert len(results) == 0, "tenant-beta must not see tenant-alpha data"
 
@@ -53,7 +59,10 @@ class TestConcurrentTenants:
             bm25.add_documents(tenant, "en", [(f"{tenant}-doc", 0, text)])
             graph.add_documents(tenant, [(f"{tenant}-doc", 0, text)])
             results = retriever.search(
-                tenant, query, language="en", search_type=SearchType.BM25,
+                tenant,
+                query,
+                language="en",
+                search_type=SearchType.BM25,
             )
             return tenant, len(results)
 
@@ -84,12 +93,18 @@ class TestConcurrentTenants:
 
         # Deleted tenant should have no results
         results = retriever.search(
-            "del-t", "Data to delete", language="en", search_type=SearchType.BM25,
+            "del-t",
+            "Data to delete",
+            language="en",
+            search_type=SearchType.BM25,
         )
         assert len(results) == 0
 
         # Other tenant should still have results
         results = retriever.search(
-            "keep-t", "Data to keep", language="en", search_type=SearchType.BM25,
+            "keep-t",
+            "Data to keep",
+            language="en",
+            search_type=SearchType.BM25,
         )
         assert len(results) >= 1
