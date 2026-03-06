@@ -6,7 +6,7 @@ from rag_engine.models.config import Settings
 from rag_engine.models.health import HealthResponse, HealthStatus
 
 router = APIRouter(tags=["system"])
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
 
 
 @router.get("/health", response_model=HealthResponse)

@@ -25,7 +25,7 @@ class EmbeddingService:
             model_name: HuggingFace model identifier.
         """
         self._model_name = model_name
-        self._model = None
+        self._model: Any = None
 
     @property
     def model(self) -> Any:

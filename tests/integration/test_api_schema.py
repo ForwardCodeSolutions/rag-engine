@@ -1,9 +1,9 @@
 """API schema validation tests using Schemathesis."""
 
 import schemathesis
+from schemathesis.openapi import from_asgi
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-from schemathesis.openapi import from_asgi
 
 from rag_engine.api.app import create_app
 from rag_engine.api.routes import rate_limit

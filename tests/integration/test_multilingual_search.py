@@ -26,8 +26,12 @@ class TestMultilingualSearch:
     def _search(self, client: TestClient, query: str, tenant: str, language: str = "en") -> dict:
         resp = client.post(
             "/api/v1/documents/search",
-            json={"query": query, "tenant_id": tenant, "search_type": "bm25",
-                  "language": language},
+            json={
+                "query": query,
+                "tenant_id": tenant,
+                "search_type": "bm25",
+                "language": language,
+            },
             headers=self._headers,
         )
         assert resp.status_code == 200

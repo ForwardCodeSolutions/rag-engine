@@ -51,12 +51,20 @@ class TestHybridRetrievalQuality:
 
         vector_results = qdrant.search("t1", query_vec, top_k=4)
         hybrid = retriever.search(
-            "t1", "Machine Learning", language="en",
-            search_type=SearchType.HYBRID, vector_results=vector_results, top_k=4,
+            "t1",
+            "Machine Learning",
+            language="en",
+            search_type=SearchType.HYBRID,
+            vector_results=vector_results,
+            top_k=4,
         )
         pure_vector = retriever.search(
-            "t1", "Machine Learning", language="en",
-            search_type=SearchType.VECTOR, vector_results=vector_results, top_k=4,
+            "t1",
+            "Machine Learning",
+            language="en",
+            search_type=SearchType.VECTOR,
+            vector_results=vector_results,
+            top_k=4,
         )
 
         # Hybrid should return results (BM25 + graph contribute)
@@ -74,16 +82,25 @@ class TestHybridRetrievalQuality:
         retriever = HybridRetriever(bm25, graph)
 
         bm25_only = retriever.search(
-            "t1", "Machine Learning healthcare", language="en",
-            search_type=SearchType.BM25, top_k=10,
+            "t1",
+            "Machine Learning healthcare",
+            language="en",
+            search_type=SearchType.BM25,
+            top_k=10,
         )
         graph_only = retriever.search(
-            "t1", "Machine Learning healthcare", language="en",
-            search_type=SearchType.GRAPH, top_k=10,
+            "t1",
+            "Machine Learning healthcare",
+            language="en",
+            search_type=SearchType.GRAPH,
+            top_k=10,
         )
         hybrid = retriever.search(
-            "t1", "Machine Learning healthcare", language="en",
-            search_type=SearchType.HYBRID, top_k=10,
+            "t1",
+            "Machine Learning healthcare",
+            language="en",
+            search_type=SearchType.HYBRID,
+            top_k=10,
         )
 
         # Hybrid should return at least as many results as either source alone
@@ -96,8 +113,11 @@ class TestHybridRetrievalQuality:
 
         retriever = HybridRetriever(bm25, graph)
         hybrid = retriever.search(
-            "t1", "Machine Learning", language="en",
-            search_type=SearchType.HYBRID, top_k=10,
+            "t1",
+            "Machine Learning",
+            language="en",
+            search_type=SearchType.HYBRID,
+            top_k=10,
         )
 
         doc_chunk_keys = [(r.document_id, r.chunk_text) for r in hybrid]

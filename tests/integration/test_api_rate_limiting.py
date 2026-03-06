@@ -6,8 +6,6 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from rag_engine.api.dependencies import verify_api_key
-
 
 class TestAPIRateLimiting:
     """Verify rate limiter returns 429 when limits are exceeded."""
