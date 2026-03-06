@@ -2,6 +2,8 @@
 
 ![CI](https://github.com/ForwardCodeSolutions/rag-engine/actions/workflows/ci.yml/badge.svg)
 ![Coverage](https://img.shields.io/badge/coverage-96%25-brightgreen)
+![Python](https://img.shields.io/badge/python-3.11%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 Lightweight hybrid RAG engine combining vector search, BM25, and knowledge graphs. Built for multilingual document retrieval with GDPR compliance.
 
@@ -70,14 +72,15 @@ make dev      # Start with hot reload
 
 ### Test Suite
 
-209 tests across unit and integration:
+244 tests across unit, integration, and property-based:
 
 ```
 tests/
-  unit/           — 198 tests (models, ingestion, BM25, knowledge graph,
-                     hybrid retriever, Qdrant, embedding, GDPR, auth,
-                     document endpoints, evaluation, parsers)
-  integration/    — 11 tests (full retrieval pipeline, GDPR cascade,
+  unit/           — 198 unit + 9 property-based tests (models, ingestion,
+                     BM25, knowledge graph, hybrid retriever, Qdrant,
+                     embedding, GDPR, auth, document endpoints, evaluation,
+                     parsers, hypothesis-driven invariants)
+  integration/    — 37 tests (full retrieval pipeline, GDPR cascade,
                      API endpoints, quality metrics)
 ```
 
