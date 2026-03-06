@@ -33,4 +33,5 @@ htmlcov/
 # Ruff
 .ruff_cache/
 
+# Hypothesis
 .hypothesis/
