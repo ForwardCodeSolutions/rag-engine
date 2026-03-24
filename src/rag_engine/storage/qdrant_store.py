@@ -53,8 +53,7 @@ class QdrantStore(BaseStore):
         """
         collection_name = self._collection_name(tenant_id)
 
-        existing = [c.name for c in self._client.get_collections().collections]
-        if collection_name in existing:
+        if self._client.collection_exists(collection_name):
             return
 
         self._client.create_collection(
@@ -138,8 +137,7 @@ class QdrantStore(BaseStore):
         """
         collection_name = self._collection_name(tenant_id)
 
-        existing = [c.name for c in self._client.get_collections().collections]
-        if collection_name not in existing:
+        if not self._client.collection_exists(collection_name):
             return []
 
         hits = self._client.query_points(
@@ -174,8 +172,7 @@ class QdrantStore(BaseStore):
         """
         collection_name = self._collection_name(tenant_id)
 
-        existing = [c.name for c in self._client.get_collections().collections]
-        if collection_name not in existing:
+        if not self._client.collection_exists(collection_name):
             return 0
 
         # Count points before deletion
@@ -217,8 +214,7 @@ class QdrantStore(BaseStore):
         """
         collection_name = self._collection_name(tenant_id)
 
-        existing = [c.name for c in self._client.get_collections().collections]
-        if collection_name not in existing:
+        if not self._client.collection_exists(collection_name):
             return 0
 
         total = self._client.count(collection_name=collection_name).count

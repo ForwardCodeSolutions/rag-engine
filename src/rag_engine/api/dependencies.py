@@ -1,5 +1,6 @@
 """Shared FastAPI dependencies for authentication and service wiring."""
 
+import hmac
 import re
 from functools import lru_cache
 
@@ -24,7 +25,7 @@ def get_gdpr_service() -> GDPRService:
     qdrant_store: QdrantStore | None = None
     try:
         qdrant_store = QdrantStore(url=_settings.qdrant_url)
-        qdrant_store._client.get_collections()  # verify connectivity
+        qdrant_store._client.collection_exists("_ping")  # verify connectivity
     except Exception:
         _logger.warning("qdrant_unavailable_for_gdpr", url=_settings.qdrant_url)
         qdrant_store = None
@@ -43,7 +44,7 @@ async def verify_api_key(x_api_key: str = Header(...)) -> str:
     Raises:
         HTTPException: 401 if key is missing or invalid.
     """
-    if x_api_key != _settings.api_key:
+    if not hmac.compare_digest(x_api_key, _settings.api_key):
         raise HTTPException(status_code=401, detail="Invalid API key")
     return x_api_key
 

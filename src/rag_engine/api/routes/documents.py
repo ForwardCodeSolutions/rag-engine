@@ -17,7 +17,6 @@ from rag_engine.storage.knowledge_graph import KnowledgeGraphStore
 
 router = APIRouter(tags=["documents"], dependencies=[Depends(verify_api_key)])
 
-# Shared store instances (will be replaced with dependency injection later)
 _bm25_store = BM25Store()
 _graph_store = KnowledgeGraphStore()
 _retriever = HybridRetriever(_bm25_store, _graph_store)

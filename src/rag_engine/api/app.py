@@ -1,5 +1,9 @@
 """FastAPI application setup."""
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
@@ -11,16 +15,25 @@ from rag_engine.models.config import Settings
 from rag_engine.utils.logging import setup_logging
 
 settings = Settings()  # type: ignore[call-arg]
+logger = structlog.get_logger()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Manage application startup and shutdown lifecycle."""
+    setup_logging(log_level=settings.log_level)
+    logger.info("app_started", version=settings.app_version)
+    yield
+    logger.info("app_shutdown")
 
 
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application."""
-    setup_logging(log_level=settings.log_level)
-
     app = FastAPI(
         title="rag-engine",
         description="Lightweight hybrid RAG engine for multilingual document search",
         version=settings.app_version,
+        lifespan=lifespan,
     )
 
     # Rate limiting

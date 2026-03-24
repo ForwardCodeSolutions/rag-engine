@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Lightweight hybrid RAG engine for multilingual document search"
 readme = "README.md"
 license = { text = "MIT" }
+authors = [{ name = "Hennadii Pynko" }]
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",
